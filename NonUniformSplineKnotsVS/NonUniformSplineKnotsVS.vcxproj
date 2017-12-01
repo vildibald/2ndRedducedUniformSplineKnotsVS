@@ -89,6 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,17 +145,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\NonUniformSplineKnots\MulVsDiv.h" />
+    <ClInclude Include="ComparisonBenchmarkResult.h" />
+    <ClInclude Include="MultithreadPreparator.h" />
+    <ClInclude Include="ReducedAlgorithm.h" />
+    <ClInclude Include="FullAlgorithm.h" />
+    <ClInclude Include="KnotMatrix.h" />
+    <ClInclude Include="KnotVector.h" />
+    <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="SplineKnots.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StopWatch.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Tridiagonal.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NonUniformSplineKnotsVS.cpp" />
+    <ClCompile Include="ComparisonBenchmarkResult.cpp" />
+    <ClCompile Include="ReducedAlgorithm.cpp" />
+    <ClCompile Include="FullAlgorithm.cpp" />
+    <ClCompile Include="MathFunction.cpp" />
+    <ClCompile Include="NonUniformSplineKnotsVS.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
+    </ClCompile>
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

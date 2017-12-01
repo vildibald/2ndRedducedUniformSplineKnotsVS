@@ -3,108 +3,118 @@
 #include "KnotVector.h"
 #include "KnotMatrix.h"
 
-namespace splineknots
+
+class InterpolativeMathFunction;
+
+class Spline
 {
-	class Spline
+	KnotMatrix z_;
+	KnotMatrix dx_;
+	KnotMatrix dy_;
+	KnotMatrix dxy_;
+	KnotVector x_;
+	KnotVector y_;
+
+	Spline();
+public:
+	static Spline EmptySpline();
+
+	bool IsEmpty() const;
+
+	Spline(KnotVector rowVector, KnotVector columnVector);
+
+	size_t RowsCount() const
 	{
+		return x_.size();
+	}
 
-		KnotMatrix z;
-		KnotMatrix dx;
-		KnotMatrix dy;
-		KnotMatrix dxy;
-		KnotVector x;
-		KnotVector y;
-
-		Spline();
-	public:
-		static Spline EmptySpline();
-
-		bool IsEmpty();
-
-		Spline(KnotVector rowVector, KnotVector columnVector);
-
-		size_t RowsCount() const
-		{
-			return x.size();
-		}
-
-		size_t ColumnsCount() const
-		{
-			return y.size();
-		}
+	size_t ColumnsCount() const
+	{
+		return y_.size();
+	}
 
 
-		KnotMatrix Z() const
-		{
-			return z;
-		}
+	KnotMatrix Z() const
+	{
+		return z_;
+	}
 
-		KnotMatrix Dx() const
-		{
-			return dx;
-		}
+	KnotMatrix Dx() const
+	{
+		return dx_;
+	}
 
-		KnotMatrix Dy() const
-		{
-			return dy;
-		}
+	KnotMatrix Dy() const
+	{
+		return dy_;
+	}
 
-		KnotMatrix Dxy() const
-		{
-			return dxy;
-		}
+	KnotMatrix Dxy() const
+	{
+		return dxy_;
+	}
 
-		const KnotVector& X() const {
-			return x;
-		}
+	const KnotVector& X() const
+	{
+		return x_;
+	}
 
-		const KnotVector& Y() const {
-			return y;
-		}
+	const KnotVector& Y() const
+	{
+		return y_;
+	}
 
-		const double X(size_t i) const {
-			return x[i];
-		}
+	const double X(size_t i) const
+	{
+		return x_[i];
+	}
 
-		const double Y(size_t j) const {
-			return y[j];
-		}
+	const double Y(size_t j) const
+	{
+		return y_[j];
+	}
 
+	double Z(const size_t i, const size_t j) const
+	{
+		return z_[i][j];
+	}
 
-		double Z(const size_t i, const size_t j) const
-		{
-			return z[i][j];
-		}
-		double Dx(const size_t i, const size_t j) const
-		{
-			return dx[j][i];
-		}
-		double Dy(const size_t i, const size_t j) const
-		{
-			return dy[i][j];
-		}
-		double Dxy(const size_t i, const size_t j) const
-		{
-			return dxy[i][j];
-		}
+	double Dx(const size_t i, const size_t j) const
+	{
+		return dx_[j][i];
+	}
 
-		void SetZ(const size_t i, const size_t j, const double value)
-		{
-			z[i][j] = value;
-		}
-		void SetDx(const size_t i, const size_t j, const double value)
-		{
-			dx[j][i] = value;
-		}
-		void SetDy(const size_t i, const size_t j, const double value)
-		{
-			dy[i][j] = value;
-		}
-		void SetDxy(const size_t i, const size_t j, const double value)
-		{
-			dxy[i][j] = value;
-		}
+	double Dy(const size_t i, const size_t j) const
+	{
+		return dy_[i][j];
+	}
 
-		void Print();
-	};
-}
+	double Dxy(const size_t i, const size_t j) const
+	{
+		return dxy_[i][j];
+	}
+
+	void SetZ(const size_t i, const size_t j, const double value)
+	{
+		z_[i][j] = value;
+	}
+
+	void SetDx(const size_t i, const size_t j, const double value)
+	{
+		dx_[j][i] = value;
+	}
+
+	void SetDy(const size_t i, const size_t j, const double value)
+	{
+		dy_[i][j] = value;
+	}
+
+	void SetDxy(const size_t i, const size_t j, const double value)
+	{
+		dxy_[i][j] = value;
+	}
+
+	void Initialize(InterpolativeMathFunction mathFunction);
+
+	void Print();
+};
