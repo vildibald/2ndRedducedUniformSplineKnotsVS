@@ -3,6 +3,24 @@
 #include "utils.h"
 #include <algorithm>
 
+std::vector<Tridiagonal>& Tridiagonals::GetAll()
+{
+	return tridiagonals_;
+}
+
+Tridiagonal& Tridiagonals::Get()
+{
+	if (tridiagonals_.size() == 1)
+	{
+		return tridiagonals_[0];
+	}
+	return tridiagonals_[omp_get_thread_num()];
+}
+
+void Tridiagonals::Initialize(Tridiagonal tridiagonal) {
+	GetAll().clear();
+	GetAll().emplace_back(std::move(tridiagonal));
+}
 
 std::vector<double>&
 Tridiagonal::ResetBufferAndGet()
@@ -22,9 +40,9 @@ std::vector<double>&
 Tridiagonal::Solve()
 {
 	auto& buffer = Buffer();
-	utils::SolveTridiagonalSystemBuffered(&lhs0Coeficients_.front(),
+	utils::SolveTridiagonalSystemBuffered(&lhs2Coeficients_.front(),
 	                                      &lhs1Coeficients_.front(),
-	                                      &lhs2Coeficients_.front(),
+	                                      &lhs0Coeficients_.front(),
 	                                      &rightSideBuffer_.front(), numUnknowns_,
 	                                      &buffer.front());
 	return rightSideBuffer_;
@@ -130,7 +148,7 @@ Tridiagonal::Factory::CreateFullTridiagonal(const KnotVector& knotVector,
 		);
 
 		lhs1Coeficients.emplace_back(
-			2 * h10 * (h0 + h1)
+			2 * h10 * (h1 + h0)
 		);
 
 		lhs0Coeficients.emplace_back(
@@ -196,9 +214,15 @@ Tridiagonal::Factory::CreateReducedTridiagonal(const KnotVector& knotVector,
 	rhs2Coeficients.reserve(numUnknowns);
 	rhs3Coeficients.reserve(numUnknowns);
 	rhs4Coeficients.reserve(numUnknowns);
+	restZ0Coeficients.reserve(numUnknowns + 1);
+	restZ1Coeficients.reserve(numUnknowns + 1);
+	restZ1Coeficients.reserve(numUnknowns + 1);
+	restD0Coeficients.reserve(numUnknowns + 1);
+	restD2Coeficients.reserve(numUnknowns + 1);
 
 	const auto until = even ? knotVector.size() - 2 : knotVector.size() - 1;
-	for (auto i = 2; i < until; i += 2)
+	auto i = 2;
+	for (; i < until; i += 2)
 	{
 		const auto h3 = knotVector[i + 2] - knotVector[i + 1];
 		const auto h2 = knotVector[i + 1] - knotVector[i];
@@ -273,6 +297,35 @@ Tridiagonal::Factory::CreateReducedTridiagonal(const KnotVector& knotVector,
 			-h110 * rth1Plush0h10
 		);
 	}
+
+	const auto h1 = knotVector[i] - knotVector[i - 1];
+	const auto h0 = knotVector[i - 1] - knotVector[i - 2];
+	const auto h00 = h0 * h0;
+	const auto h11 = h1 * h1;
+	const auto h100 = h1 * h00;
+	const auto h110 = h11 * h0;
+	const auto h1Plush0 = h1 + h0;
+	const auto rth1Plush0h10 = 1 / (2 * h1Plush0 * h1 * h0);
+
+	restZ2Coeficients.emplace_back(
+		3 * h00 * rth1Plush0h10
+	);
+
+	restZ1Coeficients.emplace_back(
+		-3 * (h00 - h11) * rth1Plush0h10
+	);
+
+	restZ0Coeficients.emplace_back(
+		-3 * h11 * rth1Plush0h10
+	);
+
+	restD2Coeficients.emplace_back(
+		-h100 * rth1Plush0h10
+	);
+
+	restD0Coeficients.emplace_back(
+		-h110 * rth1Plush0h10
+	);
 
 	std::vector<std::vector<double>> rhsCoeficients =
 	{

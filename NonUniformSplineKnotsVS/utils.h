@@ -4,16 +4,17 @@
 #include <thread>
 #include <vector>
 
-namespace utils {
+namespace utils
+{
 	extern unsigned int logicalThreadCount;
 
 	template <typename Iterator, typename Function>
-	void For(Iterator from, Iterator to, Iterator incrementBy, bool inParallel, Function function)
+	void For(Iterator from, Iterator to, Iterator incrementBy, const bool inParallel,
+	         Function function)
 	{
 		if (inParallel)
 		{
 #pragma omp parallel for
-			//#pragma acc parallel
 			for (Iterator i = from; i < to; i += incrementBy)
 			{
 				function(i);
@@ -56,48 +57,48 @@ namespace utils {
 	}
 
 	std::vector<double> SolveCsabaDeboorTridiagonalSystem(double b,
-		double rightSide[],
-		unsigned int numEquations,
-		double lastMainDiagonalValue = DBL_MIN);
+	                                                      double rightSide[],
+	                                                      unsigned int numEquations,
+	                                                      double lastMainDiagonalValue = DBL_MIN);
 
 	void SolveCsabaDeboorTridiagonalSystemBuffered(double mainDiagonalValue,
-		double rightSide[], unsigned int numEquations,
-		double l[],
-		double u[], double y[], double d[],
-		double lastMainDiagonalValue = DBL_MIN);
+	                                               double rightSide[], unsigned int numEquations,
+	                                               double l[],
+	                                               double u[], double y[], double d[],
+	                                               double lastMainDiagonalValue = DBL_MIN);
 
 	void SolveTridiagonalSystem(double lower_diagonal[],
-		double main_diagonal[], double upper_diagonal[],
-		double right_side[],
-		size_t num_equations);
+	                            double main_diagonal[], double upper_diagonal[],
+	                            double right_side[],
+	                            size_t num_equations);
 
 	void SolveTridiagonalSystemBuffered(double lower_diagonal[],
-		double main_diagonal[],
-		double upper_diagonal[], double right_side[],
-		size_t num_equations,
-		double buffer[]);
+	                                    double main_diagonal[],
+	                                    double upper_diagonal[], double right_side[],
+	                                    size_t num_equations,
+	                                    double buffer[]);
 
 	void SolveDeboorTridiagonalSystem(double lower_diagonal_value,
-		double main_diagonal_value, double upper_diagonal_value,
-		double right_side[], size_t num_equations,
-		double last_main_diagonal_value = DBL_MIN);
+	                                  double main_diagonal_value, double upper_diagonal_value,
+	                                  double right_side[], size_t num_equations,
+	                                  double last_main_diagonal_value = DBL_MIN);
 
 	void SolveDeboorTridiagonalSystemBuffered(double lower_diagonal_value,
-		double main_diagonal_value,
-		double upper_diagonal_value,
-		double right_side[], size_t num_equations,
-		double buffer[],
-		double last_main_diagonal_value = DBL_MIN);
+	                                          double main_diagonal_value,
+	                                          double upper_diagonal_value,
+	                                          double right_side[], size_t num_equations,
+	                                          double buffer[],
+	                                          double last_main_diagonal_value = DBL_MIN);
 
 	void SolveDeboorTridiagonalSystem(double main_diagonal_value,
-		double right_side[], size_t num_equations,
-		double last_main_diagonal_value = DBL_MIN);
+	                                  double right_side[], size_t num_equations,
+	                                  double last_main_diagonal_value = DBL_MIN);
 
 	void SolveDeboorTridiagonalSystemBuffered(double main_diagonal_value,
-		double right_side[], size_t num_equations,
-		double buffer[], double
-		last_main_diagonal_value = DBL_MIN);
+	                                          double right_side[], size_t num_equations,
+	                                          double buffer[], double
+	                                          last_main_diagonal_value = DBL_MIN);
 
-	template<typename T>
+	template <typename T>
 	double Average(T arr[], size_t arr_size);
 };

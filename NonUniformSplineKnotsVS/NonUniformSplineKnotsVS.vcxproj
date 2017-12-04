@@ -103,6 +103,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +141,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ComparisonBenchmarkResult.h" />
+    <ClInclude Include="Direction.h" />
     <ClInclude Include="MultithreadPreparator.h" />
     <ClInclude Include="ReducedAlgorithm.h" />
     <ClInclude Include="FullAlgorithm.h" />
@@ -153,6 +164,7 @@
     <ClInclude Include="KnotVector.h" />
     <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Spline.h" />
+    <ClInclude Include="SplineAlgorithm.h" />
     <ClInclude Include="SplineKnots.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StopWatch.h" />
@@ -170,6 +182,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
     </ClCompile>
     <ClCompile Include="Spline.cpp" />
+    <ClCompile Include="SplineAlgorithm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
