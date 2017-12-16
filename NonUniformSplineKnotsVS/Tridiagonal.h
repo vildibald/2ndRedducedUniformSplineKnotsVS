@@ -93,6 +93,12 @@ public:
 
 		static Tridiagonal
 		CreateReducedTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
+
+		static Tridiagonal
+			CreateFullWithDivisionsTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
+
+		static Tridiagonal
+			CreateReducedWithDivisionsTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
 	};
 
 	static double AccumulateAllTimes(Tridiagonals& tridiagonals) {

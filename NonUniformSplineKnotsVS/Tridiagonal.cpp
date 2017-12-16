@@ -17,7 +17,8 @@ Tridiagonal& Tridiagonals::Get()
 	return tridiagonals_[omp_get_thread_num()];
 }
 
-void Tridiagonals::Initialize(Tridiagonal tridiagonal) {
+void Tridiagonals::Initialize(Tridiagonal tridiagonal)
+{
 	GetAll().clear();
 	GetAll().emplace_back(std::move(tridiagonal));
 }
@@ -340,6 +341,103 @@ Tridiagonal::Factory::CreateReducedTridiagonal(const KnotVector& knotVector,
 		std::move(restD0Coeficients),
 		std::move(restD2Coeficients)
 	};
+	Tridiagonal tridiagonal(
+		std::move(lhs0Coeficients),
+		std::move(lhs1Coeficients),
+		std::move(lhs2Coeficients),
+		std::move(rhsCoeficients),
+		numUnknowns,
+		knotVector.size()
+	);
+	return tridiagonal;
+}
+
+Tridiagonal Tridiagonal::Factory::CreateFullWithDivisionsTridiagonal(const KnotVector& knotVector,
+                                                                     const size_t numKnots)
+{
+	std::vector<double> lhs0Coeficients;
+	std::vector<double> lhs1Coeficients;
+	std::vector<double> lhs2Coeficients;
+
+	const auto numUnknowns = numKnots - 2;
+	lhs0Coeficients.reserve(numUnknowns);
+	lhs1Coeficients.reserve(numUnknowns);
+	lhs2Coeficients.reserve(numUnknowns);
+
+	for (int i = 1; i < numUnknowns + 1; ++i)
+	{
+		const auto h1 = knotVector[i + 1] - knotVector[i];
+		const auto h0 = knotVector[i] - knotVector[i - 1];
+
+		lhs2Coeficients.emplace_back(
+			h0
+		);
+
+		lhs1Coeficients.emplace_back(
+			2 * (h1 + h0)
+		);
+
+		lhs0Coeficients.emplace_back(
+			h1
+		);
+	}
+
+	std::vector<std::vector<double>> rhsCoeficients;
+	Tridiagonal tridiagonal(
+		std::move(lhs0Coeficients),
+		std::move(lhs1Coeficients),
+		std::move(lhs2Coeficients),
+		std::move(rhsCoeficients),
+		numUnknowns,
+		knotVector.size()
+	);
+	return tridiagonal;
+}
+
+Tridiagonal Tridiagonal::Factory::CreateReducedWithDivisionsTridiagonal(
+	const KnotVector& knotVector, const size_t numKnots)
+{
+	std::vector<double> lhs0Coeficients;
+	std::vector<double> lhs1Coeficients;
+	std::vector<double> lhs2Coeficients;
+
+	const auto even = numKnots % 2 == 0;
+	const auto numUnknowns = even ? numKnots / 2 - 2 : numKnots / 2 - 1;
+
+	lhs0Coeficients.reserve(numUnknowns);
+	lhs1Coeficients.reserve(numUnknowns);
+	lhs2Coeficients.reserve(numUnknowns);
+
+	const auto until = even ? knotVector.size() - 2 : knotVector.size() - 1;
+	auto i = 2;
+	for (; i < until; i += 2)
+	{
+		const auto h3 = knotVector[i + 2] - knotVector[i + 1];
+		const auto h2 = knotVector[i + 1] - knotVector[i];
+		const auto h1 = knotVector[i] - knotVector[i - 1];
+		const auto h0 = knotVector[i - 1] - knotVector[i - 2];
+		const auto h20 = h0 * h2;
+		const auto h21 = h1 * h2;
+		const auto h31 = h1 * h3;
+		const auto h3Plush2 = h3 + h2;
+		const auto h2Plush1 = h2 + h1;
+		const auto h1Plush0 = h1 + h0;
+
+		lhs2Coeficients.emplace_back(
+			h1Plush0
+		);
+
+		lhs1Coeficients.emplace_back(
+			(h31*h1Plush0+h3Plush2*(h20-4*h1Plush0*h2Plush1))/h21
+		);
+
+		lhs0Coeficients.emplace_back(
+			h3Plush2
+		);
+
+	}
+
+	std::vector<std::vector<double>> rhsCoeficients;
 	Tridiagonal tridiagonal(
 		std::move(lhs0Coeficients),
 		std::move(lhs1Coeficients),

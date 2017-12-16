@@ -43,7 +43,7 @@ void ReducedAlgorithm::FillDx(Spline& spline)
 		spline.SetDx(i, j, value);
 	};
 	FillD(spline.ColumnsCount(), spline.RowsCount(), xTridiagonals_, differenceGetter, parameterGetter,
-		derivationGetter, derivationSetter);
+	      derivationGetter, derivationSetter);
 }
 
 void ReducedAlgorithm::FillDy(Spline& spline)
@@ -65,7 +65,7 @@ void ReducedAlgorithm::FillDy(Spline& spline)
 		spline.SetDy(j, i, value);
 	};
 	FillD(spline.RowsCount(), spline.ColumnsCount(), yTridiagonals_, differenceGetter, parameterGetter,
-		derivationGetter, derivationSetter);
+	      derivationGetter, derivationSetter);
 }
 
 void ReducedAlgorithm::FillDxy(Spline& spline)
@@ -87,11 +87,11 @@ void ReducedAlgorithm::FillDxy(Spline& spline)
 		spline.SetDxy(i, j, value);
 	};
 
-	size_t loop[] = { 0, spline.ColumnsCount() - 1 };
+	size_t loop[] = {0, spline.ColumnsCount() - 1};
 	for (auto j : loop)
 	{
 		Solve(spline.ColumnsCount(), spline.RowsCount(), xTridiagonals_, differenceGetter,
-			parameterGetter, derivationGetter, derivationSetter, j);
+		      parameterGetter, derivationGetter, derivationSetter, j);
 	}
 }
 
@@ -114,7 +114,7 @@ void ReducedAlgorithm::FillDyx(Spline& spline)
 		spline.SetDxy(j, i, value);
 	};
 	FillD(spline.RowsCount(), spline.ColumnsCount(), yTridiagonals_, differenceGetter, parameterGetter,
-		derivationGetter, derivationSetter);
+	      derivationGetter, derivationSetter);
 }
 
 void ReducedAlgorithm::Initialize(Spline& spline)
@@ -126,6 +126,16 @@ void ReducedAlgorithm::Initialize(Spline& spline)
 bool ReducedAlgorithm::IsParallel() const
 {
 	return isParallel_;
+}
+
+CalculationMode ReducedAlgorithm::GetCalculationMode() const
+{
+	return calculationMode_;
+}
+
+void ReducedAlgorithm::SetCalculationMode(const CalculationMode calculationMode)
+{
+	calculationMode_ = calculationMode;
 }
 
 void ReducedAlgorithm::InParallel(const bool value)
@@ -143,10 +153,26 @@ void ReducedAlgorithm::InitializeTridiagonals(Spline& spline)
 {
 	xTridiagonals_.GetAll().clear();
 	xTridiagonals_.GetAll().clear();
-	xTridiagonals_.GetAll().emplace_back(
-		Tridiagonal::Factory::CreateReducedTridiagonal(spline.X(), spline.RowsCount()));
-	yTridiagonals_.GetAll().emplace_back(
-		Tridiagonal::Factory::CreateReducedTridiagonal(spline.Y(), spline.ColumnsCount()));
+	switch (calculationMode_)
+	{
+	case NON_OPTIMIZED:
+		xTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateReducedWithDivisionsTridiagonal(spline.X(),
+			                                                            spline.RowsCount()));
+		yTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateReducedWithDivisionsTridiagonal(spline.Y(),
+			                                                            spline.ColumnsCount()));
+		break;
+	case OPTIMIZED_DIVISIONS:
+	case OPTIMIZED_DIVISIONS_BUFFERED:
+	default:
+		xTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateReducedTridiagonal(spline.X(), spline.RowsCount()));
+		yTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateReducedTridiagonal(spline.Y(), spline.ColumnsCount()));
+		break;
+	}
+
 	Parallelize(isParallel_);
 }
 

@@ -51,12 +51,6 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FullAlgorithm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReducedAlgorithm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MultithreadPreparator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,12 +60,18 @@
     <ClInclude Include="SplineAlgorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ReducedAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FullAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculationMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NonUniformSplineKnotsVS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
@@ -89,13 +89,16 @@
     <ClCompile Include="ComparisonBenchmarkResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FullAlgorithm.cpp">
+    <ClCompile Include="SplineAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ReducedAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SplineAlgorithm.cpp">
+    <ClCompile Include="FullAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NonUniformSplineKnotsVS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

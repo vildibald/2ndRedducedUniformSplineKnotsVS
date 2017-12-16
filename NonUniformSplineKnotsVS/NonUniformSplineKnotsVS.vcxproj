@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CalculationMode.h" />
     <ClInclude Include="ComparisonBenchmarkResult.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="MultithreadPreparator.h" />
@@ -175,12 +176,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComparisonBenchmarkResult.cpp" />
+    <ClCompile Include="NonUniformSplineKnotsVS.cpp" />
     <ClCompile Include="ReducedAlgorithm.cpp" />
     <ClCompile Include="FullAlgorithm.cpp" />
     <ClCompile Include="MathFunction.cpp" />
-    <ClCompile Include="NonUniformSplineKnotsVS.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
-    </ClCompile>
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="SplineAlgorithm.cpp" />
     <ClCompile Include="stdafx.cpp">

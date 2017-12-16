@@ -129,6 +129,16 @@ bool FullAlgorithm::IsParallel() const
 	return isParallel_;
 }
 
+CalculationMode FullAlgorithm::GetCalculationMode() const
+{
+	return calculationMode_;
+}
+
+void FullAlgorithm::SetCalculationMode(const CalculationMode calculationMode)
+{
+	calculationMode_ = calculationMode;
+}
+
 void FullAlgorithm::InParallel(const bool value)
 {
 	isParallel_ = value;
@@ -144,10 +154,28 @@ void FullAlgorithm::InitializeTridiagonals(Spline& spline)
 {
 	xTridiagonals_.GetAll().clear();
 	xTridiagonals_.GetAll().clear();
-	xTridiagonals_.GetAll().emplace_back(
-		Tridiagonal::Factory::CreateFullTridiagonal(spline.X(), spline.RowsCount()));
-	yTridiagonals_.GetAll().emplace_back(
-		Tridiagonal::Factory::CreateFullTridiagonal(spline.Y(), spline.ColumnsCount()));
+
+	switch (calculationMode_)
+	{
+	case NON_OPTIMIZED:
+		xTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateFullWithDivisionsTridiagonal(spline.X(),
+			                                                         spline.RowsCount()));
+		yTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateFullWithDivisionsTridiagonal(spline.Y(),
+			                                                         spline.ColumnsCount()));
+		break;
+	case OPTIMIZED_DIVISIONS:
+	case OPTIMIZED_DIVISIONS_BUFFERED:
+	default:
+		xTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateFullTridiagonal(spline.X(), spline.RowsCount()));
+		yTridiagonals_.GetAll().emplace_back(
+			Tridiagonal::Factory::CreateFullTridiagonal(spline.Y(), spline.ColumnsCount()));
+		break;
+	}
+
+
 	Parallelize(isParallel_);
 }
 
