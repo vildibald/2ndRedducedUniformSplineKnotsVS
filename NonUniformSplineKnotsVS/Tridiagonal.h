@@ -33,21 +33,21 @@ public:
 
 class Tridiagonal final
 {
-	std::vector<double> luBuffer_;
-	std::vector<double> rightSideBuffer_;
-	std::vector<double> lhs0Coeficients_;
-	std::vector<double> lhs1Coeficients_;
-	std::vector<double> lhs2Coeficients_;
-	std::vector<std::vector<double>> rhsCoeficients_;
-	size_t numUnknowns_;
+	std::vector<double> luBuffer_{};
+	std::vector<double> rightSideBuffer_{};
+	double lhs0Coeficient_;
+	double lhs1Coeficient_;
+	double lhs2Coeficient_;
+	double h_;
+	size_t equationCount_;
 	size_t problemSize_;
 	Timer timer_;
 
-	Tridiagonal(std::vector<double> lhs0Coeficients,
-	            std::vector<double> lhs1Coeficients,
-	            std::vector<double> lhs2Coeficients,
-	            std::vector<std::vector<double>> rhsCoeficients,
-	            size_t numUnknowns,
+	Tridiagonal(double lhs0Coeficient,
+	            double lhs1Coeficient,
+	            double lhs2Coeficient,
+				double h,
+	            size_t equationCount,
 	            size_t problemSize
 	);
 
@@ -59,17 +59,17 @@ public:
 
 	std::vector<double>& Buffer();
 
-	const std::vector<double>& Lhs0Coeficients() const;
+	double Lhs0Coeficient() const;
 
-	const std::vector<double>& Lhs1Coeficients() const;
+	double Lhs1Coeficient() const;
 
-	const std::vector<double>& Lhs2Coeficients() const;
+	double Lhs2Coeficient() const;
 
-	const std::vector<std::vector<double>>& RhsCoeficients() const;
+	double H() const;
 
 	std::vector<double>& RightSideBuffer();
 
-	size_t NumUnknowns() const;
+	size_t EquationCount() const;
 
 	size_t ProblemSize() const;
 
@@ -89,16 +89,11 @@ public:
 		CreateEmptyTridiagonal();
 
 		static Tridiagonal
-		CreateFullTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
+		CreateFullTridiagonal(const KnotVector& knotVector, size_t numKnots);
 
 		static Tridiagonal
-		CreateReducedTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
+		CreateReducedTridiagonal(const KnotVector& knotVector, size_t numKnots);
 
-		static Tridiagonal
-			CreateFullWithDivisionsTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
-
-		static Tridiagonal
-			CreateReducedWithDivisionsTridiagonal(const KnotVector& knotVector, size_t numUnknowns);
 	};
 
 	static double AccumulateAllTimes(Tridiagonals& tridiagonals) {
