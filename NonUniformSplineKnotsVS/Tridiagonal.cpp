@@ -119,10 +119,9 @@ Tridiagonal Tridiagonal::Factory::CreateEmptyTridiagonal()
 }
 
 Tridiagonal
-Tridiagonal::Factory::CreateFullTridiagonal(const KnotVector& knotVector,
-                                            const size_t numKnots)
+Tridiagonal::Factory::CreateFullTridiagonal(const KnotVector& knotVector)
 {
-	const auto numUnknowns = numKnots - 2;
+	const auto numUnknowns = knotVector.size() - 2;
 	const auto h = knotVector[1] - knotVector[0];
 	Tridiagonal tridiagonal(
 		1,
@@ -136,9 +135,27 @@ Tridiagonal::Factory::CreateFullTridiagonal(const KnotVector& knotVector,
 }
 
 Tridiagonal
-Tridiagonal::Factory::CreateReducedTridiagonal(const KnotVector& knotVector,
-                                               const size_t numKnots)
+Tridiagonal::Factory::CreateFirstReducedTridiagonal(const KnotVector& knotVector)
 {
+	const auto numKnots = knotVector.size();
+	const auto even = numKnots % 2 == 0;
+	const auto numUnknowns = even ? numKnots / 2 - 2 : numKnots / 2 - 1;
+	const auto h = knotVector[1] - knotVector[0];
+	Tridiagonal tridiagonal(
+		1,
+		-14,
+		1,
+		h,
+		numUnknowns,
+		knotVector.size()
+	);
+	return tridiagonal;
+}
+
+Tridiagonal
+Tridiagonal::Factory::CreateSecondReducedTridiagonal(const KnotVector& knotVector)
+{
+	const auto numKnots = knotVector.size();
 	const auto remainder = numKnots % 4;
 	int numUnknowns = numKnots / 4;
 	switch (remainder)

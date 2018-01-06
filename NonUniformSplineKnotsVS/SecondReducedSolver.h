@@ -1,58 +1,10 @@
 #pragma once
-#include "MathFunction.h"
-#include "Spline.h"
-#include <vector>
 #include "Tridiagonal.h"
-#include "SplineCalculationMode.h"
 
-class ReducedAlgorithm
+class SecondReducedSolver
 {
-	InterpolativeMathFunction function_;
-	Tridiagonals xTridiagonals_;
-	Tridiagonals yTridiagonals_;
-	Timer timer_;
-	bool isParallel_;
-
 public:
-	ReducedAlgorithm(const InterpolativeMathFunction f);
-
-	Spline Calculate(const KnotVector xVector,
-	                 const KnotVector yVector);
-
-	double ExecutionTime();
-
-	double AllTime();
-
-	void InParallel(bool value);
-
-	bool IsParallel() const;
-
-private:
-	void Initialize(Spline& spline);
-
-	void FillDx(Spline& spline);
-
-	void FillDy(Spline& spline);
-
-	void FillDxy(Spline& spline);
-
-	void FillDyx(Spline& spline);
-
-	void Parallelize(bool inParallel);
-
-	void InitializeTridiagonals(Spline& spline);
-
-	template <typename ParameterGetter, typename DerivationGetter, typename
-	          DerivationSetter>
-	void FillD(const size_t systemCount, const size_t derivationCount, Tridiagonals& tridiagonals,
-	           const ParameterGetter& p, const DerivationGetter& dget,
-	           DerivationSetter& dset)
-	{
-		utils::For(0, static_cast<int>(systemCount), 1, isParallel_, [&](int j)
-		{
-			Solve(systemCount, derivationCount, tridiagonals, p, dget, dset, j);
-		});
-	}
+	SecondReducedSolver();
 
 	template <typename ParameterGetter, typename DerivationGetter, typename
 	          DerivationSetter>
@@ -65,7 +17,7 @@ private:
 		const auto unknownsCount = derivationCount;
 		const auto equationsCount = tridiagonal.EquationCount();
 		const auto h = tridiagonal.H();
-		const auto threeDivH = 3 / h;
+		const auto threeDivH = 3.0 / h;
 		for (size_t i = 0; i < equationsCount - 1; ++i)
 		{
 			const auto i41 = 4 * (i + 1);
@@ -103,13 +55,45 @@ private:
 		}
 		tridiagonal.Solve();
 
-		const auto minusOneDiv14 = - 1.0 / 14;
+		const auto minusOneDiv14 = -1.0 / 14;
 		const auto twelveDivH = 4.0 * threeDivH;
 		const auto oneDiv4 = 1.0 / 4;
+		//const auto threeDiv4H = oneDiv4 * threeDivH;
 		for (size_t i = 0; i < equationsCount; ++i)
 		{
 			auto idx = 4 * (i + 1);
 			dset(idx, systemIdx, rightSide[i]);
+
+			idx -= 2;
+			dset(idx, systemIdx,
+			     minusOneDiv14 * (
+				     threeDivH * (p(idx + 2, systemIdx) - p(idx - 2, systemIdx))
+				     - twelveDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
+				     - dget(idx - 2, systemIdx) - dget(idx + 2, systemIdx)
+			     )
+			);
+
+			--idx;
+			dset(idx, systemIdx,
+				oneDiv4 * (
+					threeDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
+					- dget(idx - 1, systemIdx) - dget(idx + 1, systemIdx)
+					)
+			);
+
+			idx += 2;
+			dset(idx, systemIdx,
+			     oneDiv4 * (
+				     threeDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
+				     - dget(idx - 1, systemIdx) - dget(idx + 1, systemIdx)
+			    )
+				/*threeDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
+				- oneDiv4 * (dget(idx - 1, systemIdx) + dget(idx + 1, systemIdx))*/
+			);
+		}
+		{
+			const size_t i = equationsCount;
+			auto idx = 4 * (i + 1);
 
 			idx -= 2;
 			dset(idx, systemIdx,
@@ -136,34 +120,7 @@ private:
 			     )
 			);
 		}
-		{
-			const size_t i = equationsCount;
-			auto idx = 4 * (i + 1);
-			
-			idx -= 2;
-			dset(idx, systemIdx,
-				minusOneDiv14 * (
-					threeDivH * (p(idx + 2, systemIdx) - p(idx - 2, systemIdx))
-					- twelveDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
-					- dget(idx - 2, systemIdx) - dget(idx + 2, systemIdx)
-					)
-			);
-
-			--idx;
-			dset(idx, systemIdx,
-				oneDiv4 * (
-					threeDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
-					- dget(idx - 1, systemIdx) - dget(idx + 1, systemIdx)
-					)
-			);
-
-			idx += 2;
-			dset(idx, systemIdx,
-				oneDiv4 * (
-					threeDivH * (p(idx + 1, systemIdx) - p(idx - 1, systemIdx))
-					- dget(idx - 1, systemIdx) - dget(idx + 1, systemIdx)
-					)
-			);
-		}
 	}
+
+	Tridiagonal CreateTridiagonal(const KnotVector& knots);
 };

@@ -43,13 +43,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 18.0</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 18.0</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -137,17 +137,26 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeedHighLevel</Optimization>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <OpenMPSupport>true</OpenMPSupport>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FloatingPointModel>Precise</FloatingPointModel>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <UseMSVC>false</UseMSVC>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <GenerateAlternateCodePaths>AVX2</GenerateAlternateCodePaths>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,12 +168,14 @@
   <ItemGroup>
     <ClInclude Include="ComparisonBenchmarkResult.h" />
     <ClInclude Include="Direction.h" />
+    <ClInclude Include="FirstReducedSolver.h" />
+    <ClInclude Include="FullSolver.h" />
     <ClInclude Include="MultithreadPreparator.h" />
-    <ClInclude Include="ReducedAlgorithm.h" />
-    <ClInclude Include="FullAlgorithm.h" />
+    <ClInclude Include="SplineDerivativesAlgorithm.h" />
     <ClInclude Include="KnotMatrix.h" />
     <ClInclude Include="KnotVector.h" />
     <ClInclude Include="MathFunction.h" />
+    <ClInclude Include="SecondReducedSolver.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="SplineAlgorithm.h" />
     <ClInclude Include="SplineKnots.h" />
@@ -177,10 +188,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComparisonBenchmarkResult.cpp" />
+    <ClCompile Include="FirstReducedSolver.cpp" />
+    <ClCompile Include="FullSolver.cpp" />
     <ClCompile Include="NonUniformSplineKnotsVS.cpp" />
-    <ClCompile Include="ReducedAlgorithm.cpp" />
-    <ClCompile Include="FullAlgorithm.cpp" />
+    <ClCompile Include="SplineDerivativesAlgorithm.cpp" />
     <ClCompile Include="MathFunction.cpp" />
+    <ClCompile Include="SecondReducedSolver.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="SplineAlgorithm.cpp" />
     <ClCompile Include="stdafx.cpp">

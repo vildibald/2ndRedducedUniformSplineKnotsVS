@@ -73,11 +73,11 @@ public:
 
 	size_t ProblemSize() const;
 
-	double ExecutionTime() {
+	long long ExecutionTime() {
 		return timer_.ExecutionTime();
 	}
 
-	double AllTime() {
+	long long AllTime() {
 		return timer_.AllTime();
 	}
 
@@ -89,10 +89,13 @@ public:
 		CreateEmptyTridiagonal();
 
 		static Tridiagonal
-		CreateFullTridiagonal(const KnotVector& knotVector, size_t numKnots);
+		CreateFullTridiagonal(const KnotVector& knotVector);
 
 		static Tridiagonal
-		CreateReducedTridiagonal(const KnotVector& knotVector, size_t numKnots);
+		CreateFirstReducedTridiagonal(const KnotVector& knotVector);
+
+		static Tridiagonal
+		CreateSecondReducedTridiagonal(const KnotVector& knotVector);
 
 	};
 

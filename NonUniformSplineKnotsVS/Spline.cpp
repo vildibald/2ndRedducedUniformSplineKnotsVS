@@ -33,9 +33,7 @@ Spline Spline::EmptySpline()
 
 bool Spline::IsEmpty() const
 {
-	if (RowsCount() < 1 || ColumnsCount() < 1)
-		return true;
-	return false;
+	return RowsCount() < 1 || ColumnsCount() < 1;
 }
 
 Spline::Spline()

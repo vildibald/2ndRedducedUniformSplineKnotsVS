@@ -11,11 +11,11 @@ class Timer final {
 	StopWatch executionWatch;
 	StopWatch allWatch;
 public:
-	double ExecutionTime() {
+	long long ExecutionTime() {
 		return executionWatch.EllapsedTime();
 	}
 
-	double AllTime() {
+	long long AllTime() {
 		return allWatch.EllapsedTime();
 	}
 
