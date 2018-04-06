@@ -8,7 +8,7 @@ public:
 
 	template <typename ParameterGetter, typename DerivationGetter, typename
 	          DerivationSetter>
-	void Solve(const size_t systemCount, const size_t derivationCount, Tridiagonals& tridiagonals,
+	void Solve(const size_t derivationCount, Tridiagonals& tridiagonals,
 	           const ParameterGetter& p, const DerivationGetter& dget,
 	           DerivationSetter& dset, size_t systemIdx)
 	{
@@ -34,14 +34,14 @@ public:
 			if (even)
 			{
 				// TODO: Needs support for even count.
-				rightSide.back() = 0;
+				rightSide[i] = 0;
 			}
 			else
 			{
 				rightSide[i] = threeDivH * (p(i21 + 2, systemIdx) - p(i21 - 2, systemIdx))
 					- twelveDivH * (p(i21 + 1, systemIdx) - p(i21 - 1, systemIdx));
 			}
-			rightSide.back() -= dget(derivationCount - 1, systemIdx);
+			rightSide[i] -= dget(derivationCount - 1, systemIdx);
 		}
 		tridiagonal.Solve();
 

@@ -90,7 +90,7 @@ namespace utils
 		const auto lastindex = numEquations - 1;
 		for (size_t i = 1; i < lastindex; i++)
 		{
-			auto m = 1 / (mainDiagonalValue - lowerDiagonalValue *
+			const auto m = 1 / (mainDiagonalValue - lowerDiagonalValue *
 				buffer[i - 1]);
 			buffer[i] = upperDiagonalValue * m;
 			rightSide[i] = (rightSide[i] - lowerDiagonalValue *

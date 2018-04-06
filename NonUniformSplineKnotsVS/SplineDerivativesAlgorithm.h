@@ -120,8 +120,8 @@ private:
 		size_t loop[] = { 0, spline.ColumnsCount() - 1 };
 		for (auto j : loop)
 		{
-			solver_.Solve(spline.ColumnsCount(), spline.RowsCount(), xTridiagonals_,
-				parameterGetter, derivationGetter, derivationSetter, j);
+			solver_.Solve(spline.RowsCount(), xTridiagonals_, parameterGetter,
+			              derivationGetter, derivationSetter, j);
 		}
 	}
 
@@ -168,7 +168,7 @@ private:
 	{
 		utils::For(0, static_cast<int>(systemCount), 1, isParallel_, [&](int j)
 		{
-			solver_.Solve(systemCount, derivationCount, tridiagonals, p, dget, dset, j);
+			solver_.Solve(derivationCount, tridiagonals, p, dget, dset, j);
 		});
 	}
 

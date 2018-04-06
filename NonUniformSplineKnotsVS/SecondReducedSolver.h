@@ -8,7 +8,7 @@ public:
 
 	template <typename ParameterGetter, typename DerivationGetter, typename
 	          DerivationSetter>
-	void Solve(const size_t systemCount, const size_t derivationCount, Tridiagonals& tridiagonals,
+	void Solve(const size_t derivationCount, Tridiagonals& tridiagonals,
 	           const ParameterGetter& p, const DerivationGetter& dget,
 	           DerivationSetter& dset, size_t systemIdx)
 	{
@@ -41,7 +41,7 @@ public:
 			case 2:
 				break;
 			case 1:
-				rightSide.back() = threeDivH * (p(i41 + 4, systemIdx) - p(i41 - 4, systemIdx)
+				rightSide[i] = threeDivH * (p(i41 + 4, systemIdx) - p(i41 - 4, systemIdx)
 					- 4 * (p(i41 + 3, systemIdx) - p(i41 - 3, systemIdx))
 					+ 14 * (p(i41 + 2, systemIdx) - p(i41 - 2, systemIdx))
 					- 52 * (p(i41 + 1, systemIdx) - p(i41 - 1, systemIdx))
@@ -51,7 +51,7 @@ public:
 
 				break;
 			}
-			rightSide.back() -= dN;
+			rightSide[i] -= dN;
 		}
 		tridiagonal.Solve();
 
